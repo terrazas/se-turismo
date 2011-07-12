@@ -1,0 +1,181 @@
+(import se.negocio.beans.*)
+(import se.negocio.estrategias.*)
+
+(deftemplate Preferencias
+    "Template para las preferencias del usuario"
+    (declare (from-class Preferencias))
+)
+
+(deftemplate Usuario
+    "Template para los datos del usuario"
+    (declare (from-class Usuario))
+)
+
+(deftemplate Ciudad
+    "Plantilla para los datos de las ciudades"
+    (declare (from-class Ciudad))
+)
+
+(deftemplate Hospedaje
+	"Plantilla para los datos de los hoteles"
+	(declare (from-class Hospedaje))
+)
+
+(deftemplate Tour
+	"Plantilla para los datos de los hoteles"
+	(declare (from-class Tour))
+)
+
+/*
+(defrule regla-de-prueba1
+    "Regla de prueba"
+    ?p <- (Preferencias)
+    =>
+    (printout t "Existe un dato de preferencias (Prueba 1)" crlf))
+
+(defrule regla-de-prueba2
+    "Regla de prueba2"
+    ?p <- (Preferencias)
+    (Preferencias)
+    =>
+    (printout t "Existe un dato de preferencias (Prueba 2)" crlf))
+*/
+
+
+(defrule tour0 "Regla que elige el tour nro 0"
+   (Preferencias {historico == 1 &&
+        		  naturaleza == 0 &&
+        		  montanismo == 0 &&
+        		  canotaje == 0 &&
+        		  ciclismo == 0 &&
+        		  fiestas == 0  &&
+        		  gastronomia == 0 })
+     (Usuario {presupuesto == 500})
+    =>
+   (store tour "Tour0") 
+   (printout t "Se elige la regla tour0" crlf))
+
+(defrule tour1 "Regla que elige el tour nro 1"
+   (Preferencias {historico == 1 &&
+        		  naturaleza == 0 &&
+        		  montanismo == 0 &&
+        		  canotaje == 0 &&
+        		  ciclismo == 0 &&
+        		  fiestas == 0  &&
+        		  gastronomia == 0 })
+     (Usuario {presupuesto == 1000 || presupuesto == 850})
+    =>
+   (store tour "Tour1") 
+   (printout t "Se elige la regla tour1" crlf))
+
+(defrule tour2 "Regla que elige el tour nro 1"
+   (Preferencias {historico == 1 &&
+        		  naturaleza == 0 &&
+        		  montanismo == 0 &&
+        		  canotaje == 0 &&
+        		  ciclismo == 0 &&
+        		  fiestas == 0  &&
+        		  gastronomia == 0 })
+      ?u <- (Usuario {presupuesto == 1500})
+    =>
+   (store tour "Tour2")
+   (printout t "Se elige la regla tour2" crlf))
+
+(defrule tour3 "Regla que elige el tour nro 3"
+   (Preferencias {historico == 0 &&
+        		  naturaleza == 1 &&
+        		  montanismo == 0 &&
+        		  canotaje == 0 &&
+        		  ciclismo == 0 &&
+        		  fiestas == 0  &&
+        		  gastronomia == 0 })
+      ?u <- (Usuario {presupuesto == 400})
+    =>
+   (store tour "Tour3")
+   (printout t "Se elige la regla tour3" crlf))
+
+
+(defrule tour4 "Regla que elige el tour nro 4"
+   (Preferencias {historico == 0 &&
+        		  naturaleza == 1 &&
+        		  montanismo == 0 &&
+        		  canotaje == 0 &&
+        		  ciclismo == 0 &&
+        		  fiestas == 0  &&
+        		  gastronomia == 0 })
+      ?u <- (Usuario {presupuesto == 700})
+    =>
+   (store tour "Tour4")
+   (printout t "Se elige la regla tour4" crlf))
+
+(defrule tour5 "Regla que elige el tour nro 5"
+   (Preferencias {historico == 0 &&
+        		  naturaleza == 0 &&
+        		  montanismo == 1 &&
+        		  canotaje == 0 &&
+        		  ciclismo == 0 &&
+        		  fiestas == 0  &&
+        		  gastronomia == 0 })
+      ?u <- (Usuario {presupuesto == 1000})
+    =>
+   (store tour "Tour5")
+   (printout t "Se elige la regla tour5" crlf))
+
+(defrule tour6 "Regla que elige el tour nro 6"
+   (Preferencias {historico == 0 &&
+        		  naturaleza == 0 &&
+        		  montanismo == 0 &&
+        		  canotaje == 1 &&
+        		  ciclismo == 0 &&
+        		  fiestas == 0  &&
+        		  gastronomia == 0 })
+      ?u <- (Usuario {presupuesto == 400})
+    =>
+   (store tour "Tour6")
+   (printout t "Se elige la regla tour6" crlf)
+)
+
+
+(defrule ciudad-de-origen
+	"Disminuye el presupuesto del usuario dependiendo de su ciudad de origen."
+    (declare (no-loop TRUE) (salience 10))
+    (and
+    ?usu<-(Usuario)
+    ?ciudad<-(Ciudad {nombre == usu.ciudadOrigen})
+    )
+	=> ;(retract ?ciudad)	
+      (modify ?usu (presupuesto (- ?usu.presupuesto ?ciudad.costo)))
+      (printout t "Ciudad-de-Origen: Costo de " ?ciudad.nombre " a cusco: " ?ciudad.costo crlf)
+      (printout t "Presupuesto actual del usuario " ?usu.nombre " : " ?usu.presupuesto  crlf)
+)
+
+(defrule tipo-hospedaje 
+	"Disminuye el presupuesto del usuario dependiendo del tipo de hospedaje que desee."
+    (declare (no-loop TRUE) (salience 10))
+    (and
+    ?usu<-(Usuario)
+    ?hosp<-(Hospedaje {clasificacion == usu.tipoHospedaje})
+    )
+	=>;(retract ?hosp)	
+      (modify ?usu (presupuesto (- ?usu.presupuesto ?hosp.costo)))
+      (printout t "Tipo-Hospedaje: Costo de hospedaje de " ?hosp.clasificacion " estrellas: " ?hostp.costo crlf)
+      (printout t "Presupuesto actual del usuario " ?usu.nombre " : " ?usu.presupuesto  crlf)
+)
+
+(defrule analisis-preferencias 
+	"Encuentra los tours que cumplan las preferencias del usuario."
+    (declare (no-loop TRUE))
+    (and
+    ?usu<-(Usuario (preferencias $?usuprefs))
+    ?tour<-(Tour (preferencias $?tourprefs))
+    (test (eq (length$ ?usuprefs) (length$ (intersection$ ?tourprefs ?usuprefs))))
+    (test (>= usu.presupuesto tour.costo))    
+    )
+	=>;(retract ?hosp)	
+      (store codigo_tour ?tour.codigo)
+      (printout t "Analisis-Preferencias: Segun las preferencias del usuario " ?usu.nombre " con preferencias " ?usuprefs " ")
+      (printout t " y un presupuesto de " ?usu.presupuesto crlf)
+      (printout t "se escogio el tour " ?tour.nombre " de costo " ?tour.costo " que satisface las preferencias " ?tourprefs crlf)
+)
+
+
