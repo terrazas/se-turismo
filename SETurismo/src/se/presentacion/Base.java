@@ -65,6 +65,7 @@ public class Base extends JFrame implements Observer{
 	
 	private JRadioButtonMenuItem rdbtnmntmDepth;
 	private JRadioButtonMenuItem rdbtnmntmBreadth;
+	private JRadioButtonMenuItem rdbtnmntmPrueba;
 	
 	private JCheckBoxMenuItem chckbxmntmDesdeArchivo;
 	private JCheckBoxMenuItem chckbxmntmDesdeBaseDe_1; 
@@ -216,6 +217,7 @@ public class Base extends JFrame implements Observer{
 			public void actionPerformed(ActionEvent e) {
 				sistema.setEstrategia(sistema.DEPTH);
 				rdbtnmntmBreadth.setSelected(false);
+				rdbtnmntmPrueba.setSelected(false);
 			}
 		});
 		mnEstrategia.add(rdbtnmntmDepth);
@@ -231,9 +233,20 @@ public class Base extends JFrame implements Observer{
 			public void actionPerformed(ActionEvent e) {
 				sistema.setEstrategia(sistema.BREADTH);
 				rdbtnmntmDepth.setSelected(false);
+				rdbtnmntmPrueba.setSelected(false);
 			}
 		});
 		mnEstrategia.add(rdbtnmntmBreadth);
+		
+		rdbtnmntmPrueba = new JRadioButtonMenuItem("Prueba");
+		rdbtnmntmPrueba.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sistema.setEstrategia(sistema.PRUEBA);
+				rdbtnmntmDepth.setSelected(false);
+				rdbtnmntmBreadth.setSelected(false);
+			}
+		});
+		mnEstrategia.add(rdbtnmntmPrueba);
 		
 		/////////////////  SubMenu Datos ////////////////
 		JMenu mnDatos = new JMenu("Datos");

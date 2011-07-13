@@ -47,6 +47,7 @@ public class Sistema extends Observable{
 	private int estrategia;
 	public int DEPTH=1;
 	public int BREADTH=2;
+	public int PRUEBA=3;
 	
 	private int encadenamiento;
 	public int PROGRESIVO=1;
@@ -100,6 +101,8 @@ public class Sistema extends Observable{
 		setUsuario(usuario);
 		cargarUsuario();
 		
+		mostrarReglasActivadas();
+		
 		try {
 			System.out.println("Corriendo el motor de inferencia!");
 			motor.run();
@@ -143,8 +146,10 @@ public class Sistema extends Observable{
 		Iterator<Activation> listaActivaciones;
 		try {
 			listaActivaciones = motor.listActivations();
-			while(listaActivaciones.hasNext())
+			while(listaActivaciones.hasNext()){
 				System.out.println(listaActivaciones.next().getRule().getName());
+				escribir(listaActivaciones.next().toString());
+			}
 		} catch (JessException e) {
 			e.printStackTrace();
 		}
@@ -175,6 +180,8 @@ public class Sistema extends Observable{
 				motor.eval("(set-strategy depth)");
 			else if(estrategia==BREADTH)
 				motor.eval("(set-strategy breadth)");
+			else if(estrategia==PRUEBA)
+				motor.eval("(set-strategy EstrategiaPrueba)");
 		}catch (JessException e) {
 			System.out.println("Error estableciendo estrategia");
 			e.printStackTrace();
