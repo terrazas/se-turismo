@@ -87,6 +87,7 @@ public class Sistema extends Observable{
 			motor.clear();
 			motor.reset();
 			System.out.println("Limpiando Storage");
+			//Storage compartido entre Jess y java (comparte variables)
 			motor.clearStorage();
 		} catch (JessException e1) {
 			System.out.println("Error al resetar el motor");
@@ -146,10 +147,12 @@ public class Sistema extends Observable{
 		Iterator<Activation> listaActivaciones;
 		try {
 			listaActivaciones = motor.listActivations();
+			/*
 			while(listaActivaciones.hasNext()){
 				System.out.println(listaActivaciones.next().getRule().getName());
 				escribir(listaActivaciones.next().toString());
 			}
+			*/
 		} catch (JessException e) {
 			e.printStackTrace();
 		}
